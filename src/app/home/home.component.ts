@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
         // this.textFieldValue = this.listPickerCountries[picker.selectedIndex];
         if (this.listPickerCountries[picker.selectedIndex] !== "") {
             appSettings.setNumber("gardenIdx", picker.selectedIndex);
-            console.log("storing idx of " + picker.selectedIndex);
+            this.gardenIdx = picker.selectedIndex;
             this.getSensors(this.listPickerCountries[picker.selectedIndex]);
         }
 
@@ -127,6 +127,7 @@ export class HomeComponent implements OnInit {
     }
 
     getSensor(sensor) {
+        console.log("querying:" + `/${this.listPickerCountries[this.gardenIdx]}/${sensor}`);
         firebase.query(
             this.onSensor,
             `/${this.listPickerCountries[this.gardenIdx]}/${sensor}`,
@@ -171,7 +172,7 @@ export class HomeComponent implements OnInit {
             //     this.updateGauge(reading);
             // }
         }
-    };
+    }
 
     updateGauge(reading) {
         this.gauges[reading.sensor] = true;

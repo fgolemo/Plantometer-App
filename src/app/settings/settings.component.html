@@ -20,40 +20,42 @@
 <!--    <Label class="page__content-placeholder" text="&lt;!&ndash; Page content goes here &ndash;&gt;"></Label>-->
 <!--</GridLayout>-->
 
-<ScrollView class="page__content">
-    <StackLayout verticalAlignment="center" horizontalAlignment="center">
-        <GridLayout columns="*, 3*, *" class="heading">
-            <StackLayout col="0" colSpan="3" horizontalAlignment="center">
-                <Label text="Default Values" class="setting"></Label>
-            </StackLayout>
-            <StackLayout col="0" colSpan="3" horizontalAlignment="left">
-                <Label text="What do you usually consider moist?" class="setting info"></Label>
-            </StackLayout>
-            <!--            (tap)="onNavItemTap('/home')"-->
-            <StackLayout col="0" horizontalAlignment="center">
-                <Label text="Moist Value" class="setting"></Label>
-            </StackLayout>
-            <StackLayout col="1" verticalAlignment="middle" horizontalAlignment="stretch">
-                <Slider #sl minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="defaultMoist"
-                        (valueChange)="moistchange(sl.value)" class="sliderman"></Slider>
-            </StackLayout>
-            <StackLayout col="2" verticalAlignment="top" horizontalAlignment="center">
-                <Label text="{{defaultMoist}}" class="setting"></Label>
-            </StackLayout>
-            <StackLayout col="0" colSpan="3" horizontalAlignment="left">
-                <Label text="When do you want to get a warning?" class="setting info"></Label>
-            </StackLayout>
-            <!--            (tap)="onNavItemTap('/home')"-->
-            <StackLayout col="0" horizontalAlignment="center">
-                <Label text="Warn Value" class="setting"></Label>
-            </StackLayout>
-            <StackLayout col="1" verticalAlignment="middle" horizontalAlignment="stretch">
-                <Slider #sl2 minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="defaultWarn"
-                        (valueChange)="warnchange(sl2.value)" class="sliderman"></Slider>
-            </StackLayout>
-            <StackLayout col="2" verticalAlignment="top" horizontalAlignment="center">
-                <Label text="{{defaultWarn}}" class="setting"></Label>
-            </StackLayout>
-        </GridLayout>
-    </StackLayout>
-</ScrollView>
+<!--<ScrollView class="page__content">-->
+<StackLayout verticalAlignment="center" horizontalAlignment="center">
+    <GridLayout columns="*, 3*, *" class="heading" rows="auto, auto, auto, auto, auto">
+        <StackLayout row="0" col="0" colSpan="3" horizontalAlignment="center">
+            <Label text="Default Values" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="1" col="0" colSpan="3" horizontalAlignment="left">
+            <Label text="What do you usually consider moist?" class="setting info"></Label>
+        </StackLayout>
+        <!--            (tap)="onNavItemTap('/home')"-->
+        <StackLayout row="2" col="0" horizontalAlignment="center">
+            <Label text="Moist Value" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="2" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
+            <Slider #sl minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="defaultMoist"
+                    (valueChange)="moistchange(sl.value)" class="sliderman"></Slider>
+        </StackLayout>
+        <StackLayout row="2" col="2" verticalAlignment="top" horizontalAlignment="center">
+            <Label text="{{defaultMoist}}" class="setting"></Label>
+        </StackLayout>
+
+
+        <StackLayout row="3" col="0" colSpan="3" horizontalAlignment="left">
+            <Label text="When do you want to get a warning?" class="setting info"></Label>
+        </StackLayout>
+        <!--            (tap)="onNavItemTap('/home')"-->
+        <StackLayout row="4" col="0" horizontalAlignment="center">
+            <Label text="Warn Value" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="4" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
+            <Slider #sl2 minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="defaultWarn"
+                    (valueChange)="warnchange(sl2.value)" class="sliderman"></Slider>
+        </StackLayout>
+        <StackLayout row="4" col="2" verticalAlignment="top" horizontalAlignment="center">
+            <Label text="{{defaultWarn}}" class="setting"></Label>
+        </StackLayout>
+    </GridLayout>
+</StackLayout>
+<!--</ScrollView>-->
