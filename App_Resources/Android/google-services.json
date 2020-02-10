@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "1093917512942",
+    "firebase_url": "https://plantometer.firebaseio.com",
+    "project_id": "plantometer",
+    "storage_bucket": "plantometer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093917512942:android:48b55464493fc15a",
+        "android_client_info": {
+          "package_name": "org.flogo.plantometer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093917512942-kd6fui8voeqlmvb1sd680vl4vhs3nnhn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.flogo.plantometer",
+            "certificate_hash": "0982ab69ededa003f4c94054358b3e219f21e6df"
+          }
+        },
+        {
+          "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEKHF0l8x9rIfbgUVZ-z6QuSkKoEeMeN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093917512942:android:57ca1daf10950765",
+        "android_client_info": {
+          "package_name": "org.flogo.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093917512942-bk66pt53ed1dj84b3m414m4hm4fn504e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.flogo.test",
+            "certificate_hash": "0982ab69ededa003f4c94054358b3e219f21e6df"
+          }
+        },
+        {
+          "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEKHF0l8x9rIfbgUVZ-z6QuSkKoEeMeN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093917512942:android:e50d2a6aa134b366124fff",
+        "android_client_info": {
+          "package_name": "org.nativescript.Plantometer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEKHF0l8x9rIfbgUVZ-z6QuSkKoEeMeN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093917512942-5ke834s60stlurh02ff10fqes0kaukvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

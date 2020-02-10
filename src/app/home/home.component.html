@@ -1,0 +1,68 @@
+<ActionBar>
+    <!--
+    Use the NavigationButton as a side-drawer button in Android
+    because ActionItems are shown on the right side of the ActionBar
+    -->
+    <NavigationButton ios:visibility="collapsed" icon="res://menu" (tap)="onDrawerButtonTap()"></NavigationButton>
+    <!--
+    Use the ActionItem for IOS with position set to left. Using the
+    NavigationButton as a side-drawer button in iOS is not possible,
+    because its function is to always navigate back in the application.
+    -->
+    <ActionItem icon="res://menu" android:visibility="collapsed" (tap)="onDrawerButtonTap()"
+                ios.position="left">
+    </ActionItem>
+    <Label text="Home"></Label>
+</ActionBar>
+
+
+
+<ScrollView class="page__content">
+    <StackLayout horizontalAlignment="stretch">
+        <GridLayout columns="*, *" class="">
+            <StackLayout horizontalAlignment="center" width="100%" col="0" colSpan="2">
+                <ListPicker #fruit [items]="listPickerCountries" [selectedIndex]="gardenIdx"
+                            (selectedIndexChange)="selectedCountyChanged($event)"></ListPicker>
+            </StackLayout>
+        </GridLayout>
+        <StackLayout horizontalAlignment="center" verticalAlignmnet="center" height="150" width="150">
+            <RadRadialGauge #gauges title="Sensor 1" subtitle="69" id="gauge-1">
+
+                <TitleStyle tkRadialGaugeTitleStyle textColor="gray" ios:textSize="8" ios:verticalOffset="30" android:verticalOffset="130"></TitleStyle>
+                <SubtitleStyle tkRadialGaugeSubtitleStyle textColor="gray"></SubtitleStyle>
+                <RadialScale tkRadialGaugeScales minimum="0" maximum="200" radius="0.90">
+                    <ScaleStyle tkRadialScaleStyle majorTicksCount="10" minorTicksCount="3" lineThickness="0"
+                                labelsCount="10" ticksOffset="0"></ScaleStyle>
+                    <RadialBarIndicator tkRadialScaleIndicators minimum="30" maximum="200" location="0.97">
+                        <BarIndicatorStyle tkRadialBarIndicatorStyle fillColor="#9DCA56"></BarIndicatorStyle>
+                    </RadialBarIndicator>
+                    <RadialBarIndicator tkRadialScaleIndicators minimum="{{sensorWarnLimits[0]}}" maximum="{{sensorMoistLimits[0]}}" location="0.97">
+                        <BarIndicatorStyle tkRadialBarIndicatorStyle fillColor="#F0C44D"></BarIndicatorStyle>
+                    </RadialBarIndicator>
+                    <RadialBarIndicator tkRadialScaleIndicators minimum="0" maximum="{{sensorWarnLimits[0]}}" location="0.97">
+                        <BarIndicatorStyle tkRadialBarIndicatorStyle fillColor="#A7010E"></BarIndicatorStyle>
+                    </RadialBarIndicator>
+<!--                    <RadialNeedle tkRadialScaleIndicators value="{{test}}"></RadialNeedle>-->
+                    <RadialNeedle #needle tkRadialScaleIndicators isAnimated="true" animationDuration="200" value="0" id="needle-1">
+                        <NeedleStyle tkRadialNeedleStyle length="0.8" android:topWidth="8" android:bottomWidth="8" ios:topWidth="2" ios:bottomWidth="2"></NeedleStyle>
+                    </RadialNeedle>
+                </RadialScale>
+            </RadRadialGauge>
+        </StackLayout>
+    </StackLayout>
+</ScrollView>
+
+<!--    <GridLayout class="page__content">-->
+<!--        <Label class="page__content-icon fas" text="&#xf015;"></Label>-->
+<!--        <Label class="page__content-placeholder" text="&lt;!&ndash; Page content goes here &ndash;&gt;"></Label>-->
+<!--    </GridLayout>-->
+
+<!--    <StackLayout orientation="vertical" width="210" height="210" backgroundColor="lightgray">-->
+<!--        <Label text="Country" width="70" height="50" backgroundColor="red"></Label>-->
+<!--        <TextField [(ngModel)]="textFieldValue" hint="Choose country..." editable="false"-->
+<!--                   (tap)="showHideField('country')"></TextField>-->
+<!--    </StackLayout>-->
+<!--    <StackLayout orientation="vertical" width="100%" height="210" *ngIf="showCountryPicker" backgroundColor="lightgray">-->
+<!--        <ListPicker [items]="listPickerCountries" (selectedIndexChange)="selectedCountyChanged($event)"></ListPicker>-->
+
+<!--    </StackLayout>-->
