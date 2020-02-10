@@ -15,6 +15,7 @@ import { ListPicker } from "tns-core-modules/ui/list-picker";
 const firebase = require("nativescript-plugin-firebase");
 import * as appSettings from "tns-core-modules/application-settings";
 import { RadialNeedle, RadRadialGauge } from "nativescript-ui-gauge";
+import { Sensor } from "~/app/home/sensor";
 
 // to rerun firebase config, run `npm run config`
 interface Reading {
@@ -30,14 +31,14 @@ interface Reading {
 export class HomeComponent implements OnInit {
     showCountryPicker: boolean = false;
     listPickerCountries: Array<string> = [""];
-    sensors: Array<number> = [];
+    sensors: Array<Sensor> = [];
     // textFieldValue: string = "";
     gardenIdx: number = 0;
     // gaugesActive: Array<number> = [];
     gauges = {};
     gaugeValues = {};
-    sensorMoistLimits: Array<number> = [30]; // TODO later load these from the defaults or user settings
-    sensorWarnLimits: Array<number> = [10]; // TODO later load these from the defaults or user settings
+    sensorMoistLimits: Array<number> = []; // TODO later load these from the user settings
+    sensorWarnLimits: Array<number> = []; // TODO later load these from the user settings
 
     @ViewChildren("gauges") gaugeElements: QueryList<any>;
     // @ViewChild("needle", {static: false}) needleElement: ElementRef;
@@ -50,6 +51,9 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.sensorWarnLimits = [appSettings.getNumber("defaultWarn", 10)];
+        this.sensorMoistLimits = [appSettings.getNumber("defaultMoist", 30)];
+
         // Init your component properties here.
         firebase.init({
             // Optionally pass in properties for database, authentication and cloud messaging,
@@ -87,7 +91,9 @@ export class HomeComponent implements OnInit {
         this.showCountryPicker = true;
     }
 
-    selectedCountyChanged(args) {
+    selectedGardenChanged(args) {
+        this.gauges = {};
+        this.gaugeValues = {};
         const picker = <ListPicker>args.object;
         // this.showCountryPicker = false;
         // this.textFieldValue = this.listPickerCountries[picker.selectedIndex];
@@ -100,12 +106,13 @@ export class HomeComponent implements OnInit {
     }
 
     getSensors(garden) {
-        this.sensors = new Array<number>();
+        this.sensors = new Array<Sensor>();
+
         firebase.getValue(`/${garden}/sensors`)
             .then((result) => {
                 result.value.forEach((val) => {
-                    if (this.sensors.indexOf(val) === -1) {
-                        this.sensors.push(val);
+                    if (!this.sensors.some((e) => e.id === val)) {
+                        this.sensors.push(new Sensor(val));
                     }
                 });
                 this.makeGauges();
@@ -115,7 +122,7 @@ export class HomeComponent implements OnInit {
 
     makeGauges() {
         for (const sensor of this.sensors) {
-            this.getSensor(sensor);
+            this.getSensor(sensor.id);
         }
     }
 
@@ -141,10 +148,10 @@ export class HomeComponent implements OnInit {
         // note that the query returns 1 match at a time
         // in the order specified in the query
         if (!result.error) {
-            console.log("Event type: " + result.type);
-            console.log("Key: " + result.key);
-            console.log("Value: " + JSON.stringify(result.value)); // a JSON object
-            console.log("Children: " + JSON.stringify(result.children)); // an array, added in plugin v 8.0.0
+            // console.log("Event type: " + result.type);
+            // console.log("Key: " + result.key);
+            // console.log("Value: " + JSON.stringify(result.value)); // a JSON object
+            // console.log("Children: " + JSON.stringify(result.children)); // an array, added in plugin v 8.0.0
 
             let reading: Reading;
             if (result.value.hasOwnProperty("moisture")) {
@@ -154,15 +161,15 @@ export class HomeComponent implements OnInit {
             }
             console.log("reading: " + JSON.stringify(reading)); // an array, added in plugin v 8.0.0
 
-            if (!this.gauges.hasOwnProperty(reading.sensor)) {
-                console.log("making new gauge");
-                this.updateGauge(reading);
-
-                // TODO add gauges dynamically
-            } else {
-                console.log("updating gauge: " + reading.moisture);
-                this.updateGauge(reading);
-            }
+            this.updateGauge(reading);
+            // if (!this.gauges.hasOwnProperty(reading.sensor)) {
+            //     // console.log("making new gauge");
+            //     this.updateGauge(reading);
+            //
+            // } else {
+            //     // console.log("updating gauge: " + reading.moisture);
+            //     this.updateGauge(reading);
+            // }
         }
     };
 
