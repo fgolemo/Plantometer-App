@@ -33,11 +33,11 @@
                                 ios:verticalOffset="30"
                                 android:verticalOffset="130"></TitleStyle>
                     <SubtitleStyle tkRadialGaugeSubtitleStyle textColor="gray"></SubtitleStyle>
-                    <RadialScale tkRadialGaugeScales minimum="0" maximum="200" radius="0.90">
+                    <RadialScale tkRadialGaugeScales minimum="0" maximum="{{sensorRangeLimits[0]}}" radius="0.90">
                         <ScaleStyle tkRadialScaleStyle majorTicksCount="10" minorTicksCount="3"
                                     lineThickness="0"
                                     labelsCount="10" ticksOffset="0"></ScaleStyle>
-                        <RadialBarIndicator tkRadialScaleIndicators minimum="{{sensorMoistLimits[0]}}" maximum="200" location="0.97">
+                        <RadialBarIndicator tkRadialScaleIndicators minimum="{{sensorMoistLimits[0]}}" maximum="{{sensorRangeLimits[0]}}" location="0.97">
                             <BarIndicatorStyle tkRadialBarIndicatorStyle
                                                fillColor="#9DCA56"></BarIndicatorStyle>
                         </RadialBarIndicator>

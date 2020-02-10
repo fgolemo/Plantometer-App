@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit {
     gaugeValues = {};
     sensorMoistLimits: Array<number> = []; // TODO later load these from the user settings
     sensorWarnLimits: Array<number> = []; // TODO later load these from the user settings
+    sensorRangeLimits: Array<number> = []; // TODO later load these from the user settings
 
     @ViewChildren("gauges") gaugeElements: QueryList<any>;
     // @ViewChild("needle", {static: false}) needleElement: ElementRef;
@@ -53,6 +54,7 @@ export class HomeComponent implements OnInit {
     ngOnInit(): void {
         this.sensorWarnLimits = [appSettings.getNumber("defaultWarn", 10)];
         this.sensorMoistLimits = [appSettings.getNumber("defaultMoist", 30)];
+        this.sensorRangeLimits = [appSettings.getNumber("defaultRange", 1024)];
 
         // Init your component properties here.
         firebase.init({

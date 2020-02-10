@@ -11,6 +11,7 @@ import * as appSettings from "tns-core-modules/application-settings";
 export class SettingsComponent implements OnInit {
     defaultWarn: number = 10;
     defaultMoist: number = 30;
+    defaultRange: number = 1024;
 
     constructor() {
 
@@ -18,8 +19,9 @@ export class SettingsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.defaultWarn = appSettings.getNumber("defaultWarn", 10);
-        this.defaultMoist = appSettings.getNumber("defaultMoist", 30);
+        this.defaultWarn = appSettings.getNumber("defaultWarn", this.defaultWarn);
+        this.defaultMoist = appSettings.getNumber("defaultMoist", this.defaultMoist);
+        this.defaultRange = appSettings.getNumber("defaultRange", this.defaultRange);
     }
 
     onDrawerButtonTap(): void {
@@ -34,6 +36,10 @@ export class SettingsComponent implements OnInit {
     warnchange(val: number): void {
         this.defaultWarn = val;
         appSettings.setNumber("defaultWarn", this.defaultWarn);
+    }
+    rangechange(val: number): void {
+        this.defaultRange = val;
+        appSettings.setNumber("defaultRange", this.defaultRange);
     }
 }
 
