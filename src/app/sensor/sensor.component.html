@@ -22,13 +22,25 @@
             <StackLayout [visibility]="dataLoaded ? 'visible' : 'collapse'">
 <!--            <StackLayout *ngIf="dataLoaded">-->
                 <RadCartesianChart tkExampleTitle tkToggleNavButton>
+                    <RadCartesianChartGrid tkCartesianGrid
+                                           horizontalLinesVisible="true"
+                                           verticalLinesVisible="false"
+                                           horizontalStripLinesVisible="false"
+                                           verticalStripLinesVisible="false"
+                                           horizontalStrokeColor="#22006b69"
+                                           horizontalStrokeWidth="1"
+                    >
+                    </RadCartesianChartGrid>
                     <DateTimeContinuousAxis tkCartesianHorizontalAxis
                                             minimum="{{dateStart}}" maximum="{{dateEnd}}"
                                             majorStep="720" majorStepUnit="Minute" dateFormat="MMM dd"
                                             labelFitMode="Rotate" labelRotationAngle="1.2">
                     </DateTimeContinuousAxis>
                     <LinearAxis tkCartesianVerticalAxis minimum="0" maximum="1024"></LinearAxis>
-
+                    <Trackball tkCartesianTrackball></Trackball>
+<!--                    <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false" value="100" zPosition="AboveSeries"-->
+<!--                                             android:strokeWidth="4" ios:strokeWidth="10" strokeColor="#DEBFEB80">-->
+<!--                    </ChartGridLineAnnotation>-->
                     <LineSeries tkCartesianSeries [items]="data" categoryProperty="timeStamp"
                                 valueProperty="amount"></LineSeries>
                 </RadCartesianChart>
