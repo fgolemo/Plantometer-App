@@ -16,7 +16,7 @@
 </ActionBar>
 
 <StackLayout verticalAlignment="center" horizontalAlignment="center">
-    <GridLayout columns="*, 3*, *" class="heading" rows="150, auto, auto, auto">
+    <GridLayout columns="*, 3*, *" class="heading" rows="300, auto, auto, auto">
 
         <StackLayout row="0" col="0" colSpan="3" horizontalAlignment="center">
             <StackLayout [visibility]="dataLoaded ? 'visible' : 'collapse'">
@@ -27,7 +27,7 @@
                                             majorStep="720" majorStepUnit="Minute" dateFormat="MMM dd"
                                             labelFitMode="Rotate" labelRotationAngle="1.2">
                     </DateTimeContinuousAxis>
-                    <LinearAxis tkCartesianVerticalAxis></LinearAxis>
+                    <LinearAxis tkCartesianVerticalAxis minimum="0" maximum="1024"></LinearAxis>
 
                     <LineSeries tkCartesianSeries [items]="data" categoryProperty="timeStamp"
                                 valueProperty="amount"></LineSeries>

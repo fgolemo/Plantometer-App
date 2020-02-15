@@ -35,24 +35,13 @@ export class SensorComponent implements OnInit {
             + ("0" + (end.getMonth() + 1)).slice(-2) + "/"
             + end.getFullYear();
         const start = new Date();
-        start.setDate(start.getDate() - 7);
+        start.setDate(start.getDate() - 6);
         this.dateStart = ("0" + start.getDate()).slice(-2) + "/"
             + ("0" + (start.getMonth() + 1)).slice(-2) + "/"
             + start.getFullYear();
         // this.dateTimeSource = this.getData();
         // console.log(this.dateStart);
         // console.log(this.dateEnd);
-    }
-
-    getData(): Array<PlotReading> {
-        // return buf;
-        return [{
-            timeStamp: 1581802045796,
-            amount: 829
-        }, {
-            timeStamp: 1581803767300,
-            amount: 826
-        }];
     }
 
     ngOnInit(): void {
@@ -73,22 +62,19 @@ export class SensorComponent implements OnInit {
                 },
                 limit: {
                     type: firebase.QueryLimitType.LAST,
-                    value: 2
+                    value: 1000
                 }
             }
         ).then(
             (result) => {
                 if (!result.error) {
+                    let buf = new Array<PlotReading>();
                     Object.keys(result.value).forEach((key) => {
                         const reading = result.value[key] as Reading;
-                        const dataPoint = new PlotReading(reading.timestamp, reading.moisture);
-                        this.data.push(dataPoint);
+                        buf.push(new PlotReading(reading.timestamp, reading.moisture));
                     });
-                    // this.dateTimeSource = this.getData();
-                    // this.data = this.dateTimeSource;
-                    console.log(this.data);
-                    this.data = this.getData();
-                    console.log(this.data);
+
+                    this.data = buf;
                     this.dataLoaded = true;
                 } // TODO deal with error
             }
