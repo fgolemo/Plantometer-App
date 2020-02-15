@@ -3,10 +3,12 @@ import { NativeScriptCommonModule } from "nativescript-angular/common";
 
 import { SensorRoutingModule } from "./sensor-routing.module";
 import { SensorComponent } from "./sensor.component";
+import { NativeScriptUIChartModule } from "nativescript-ui-chart/angular";
 
 @NgModule({
     imports: [
         NativeScriptCommonModule,
+        NativeScriptUIChartModule,
         SensorRoutingModule
     ],
     declarations: [
