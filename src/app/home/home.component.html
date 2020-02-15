@@ -26,8 +26,8 @@
         </GridLayout>
 
         <WrapLayout horizontalAlignment="center" verticalAlignmnet="center" orientation="horizontal">
-            <StackLayout height="170" width="170" *ngFor="let item of sensors; let index=index; let odd=odd; let even=even;" [ngClass]="{ gaugeodd: odd, gaugeeven: even }">
-                <RadRadialGauge #gauges [title]="'Sensor ' + item.id" subtitle="69" [id]="'gauge-'+item.id">
+            <StackLayout (tap)="openSensor(item.id)" height="170" width="170" *ngFor="let item of sensors; let index=index; let odd=odd; let even=even;" [ngClass]="{ gaugeodd: odd, gaugeeven: even }">
+                <RadRadialGauge #gauges [title]="item.name" subtitle="69" [id]="'gauge-'+item.id">
 
                     <TitleStyle tkRadialGaugeTitleStyle textColor="gray" ios:textSize="8"
                                 ios:verticalOffset="30"

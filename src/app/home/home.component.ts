@@ -16,6 +16,9 @@ const firebase = require("nativescript-plugin-firebase");
 import * as appSettings from "tns-core-modules/application-settings";
 import { RadialNeedle, RadRadialGauge } from "nativescript-ui-gauge";
 import { Sensor } from "~/app/home/sensor";
+import { Router } from "@angular/router";
+import { PlatformLocation } from "@angular/common";
+import { Frame } from "tns-core-modules/ui/frame";
 
 // to rerun firebase config, run `npm run config`
 interface Reading {
@@ -47,11 +50,16 @@ export class HomeComponent implements OnInit {
 
     // @ViewChild('fruit', { static: true }) fruit: ElementRef;
 
-    constructor(private _vcRef: ViewContainerRef) {
+    constructor(private _vcRef: ViewContainerRef, private _router: Router, private _location: PlatformLocation) {
         // Use the component constructor to inject providers.
     }
 
     ngOnInit(): void {
+        this._location.onPopState(() => {
+            console.log("refreshing");
+            this.getGardens();
+        });
+
         this.sensorWarnLimits = [appSettings.getNumber("defaultWarn", 10)];
         this.sensorMoistLimits = [appSettings.getNumber("defaultMoist", 30)];
         this.sensorRangeLimits = [appSettings.getNumber("defaultRange", 1024)];
@@ -97,8 +105,6 @@ export class HomeComponent implements OnInit {
         this.gauges = {};
         this.gaugeValues = {};
         const picker = <ListPicker>args.object;
-        // this.showCountryPicker = false;
-        // this.textFieldValue = this.listPickerCountries[picker.selectedIndex];
         if (this.listPickerCountries[picker.selectedIndex] !== "") {
             appSettings.setNumber("gardenIdx", picker.selectedIndex);
             this.gardenIdx = picker.selectedIndex;
@@ -114,7 +120,9 @@ export class HomeComponent implements OnInit {
             .then((result) => {
                 result.value.forEach((val) => {
                     if (!this.sensors.some((e) => e.id === val)) {
-                        this.sensors.push(new Sensor(val));
+                        const settingPath = `${this.listPickerCountries[this.gardenIdx]}-${val}`;
+                        const name = appSettings.getString(settingPath, `Sensor ${val}`);
+                        this.sensors.push(new Sensor(val, name));
                     }
                 });
                 this.makeGauges();
@@ -174,7 +182,7 @@ export class HomeComponent implements OnInit {
             //     this.updateGauge(reading);
             // }
         }
-    }
+    };
 
     updateGauge(reading) {
         this.gauges[reading.sensor] = true;
@@ -192,5 +200,10 @@ export class HomeComponent implements OnInit {
                 element.subtitle = String(reading.moisture);
             }
         });
+    }
+
+    openSensor(id) {
+        console.log(`navigating to :/sensor/${this.listPickerCountries[this.gardenIdx]}/${id}`);
+        this._router.navigate([`/sensor/${this.listPickerCountries[this.gardenIdx]}/${id}`]);
     }
 }
