@@ -62,7 +62,7 @@ export class SensorComponent implements OnInit {
                 },
                 limit: {
                     type: firebase.QueryLimitType.LAST,
-                    value: 1000
+                    value: 400
                 }
             }
         ).then(
