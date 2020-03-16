@@ -27,6 +27,9 @@ export class SensorComponent implements OnInit {
     dateEnd: string;
     dateStart: string;
     dataLoaded: boolean = false;
+    maxGauge: number = 1024;
+    warnValue: number = 1;
+    moistValue: number = 2;
 
     constructor(private _route: ActivatedRoute) {
         const end = new Date();
@@ -41,14 +44,15 @@ export class SensorComponent implements OnInit {
             + start.getFullYear();
         // this.dateTimeSource = this.getData();
         // console.log(this.dateStart);
-        // console.log(this.dateEnd);
     }
 
     ngOnInit(): void {
         this.garden = this._route.snapshot.params.garden;
         this.sensor = this._route.snapshot.params.sensor;
         this.name = appSettings.getString(`${this.garden}-${this.sensor}`, `Sensor ${this.sensor}`);
-
+        this.maxGauge = appSettings.getNumber(`${this.garden}-${this.sensor}-maxGauge`, 1024);
+        this.warnValue = appSettings.getNumber(`${this.garden}-${this.sensor}-warnValue`, appSettings.getNumber("defaultWarn", 10));
+        this.moistValue = appSettings.getNumber(`${this.garden}-${this.sensor}-moistValue`, appSettings.getNumber("defaultMoist", 30));
         // this.dateTimeSource = this.getDateTimeSource();
 
         firebase.query(
@@ -68,7 +72,7 @@ export class SensorComponent implements OnInit {
         ).then(
             (result) => {
                 if (!result.error) {
-                    let buf = new Array<PlotReading>();
+                    const buf = new Array<PlotReading>();
                     Object.keys(result.value).forEach((key) => {
                         const reading = result.value[key] as Reading;
                         buf.push(new PlotReading(reading.timestamp, reading.moisture));
@@ -108,7 +112,7 @@ export class SensorComponent implements OnInit {
             // this.dateTimeSource.push(new PlotReading(reading.timestamp, reading.moisture));
         }
         // console.log(this.dateTimeSource);
-    }
+    };
 
     onDrawerButtonTap(): void {
         const sideDrawer = <RadSideDrawer>app.getRootView();
@@ -120,5 +124,18 @@ export class SensorComponent implements OnInit {
         const textField = <TextField>args.object;
         this.name = textField.text;
         appSettings.setString(`${this.garden}-${this.sensor}`, this.name);
+    }
+
+    maxchange(val: number): void {
+        this.maxGauge = val;
+        appSettings.setNumber(`${this.garden}-${this.sensor}-maxGauge`, this.maxGauge);
+    }
+    moistchange(val: number): void {
+        this.moistValue = val;
+        appSettings.setNumber(`${this.garden}-${this.sensor}-moistValue`, this.moistValue);
+    }
+    warnchange(val: number): void {
+        this.warnValue = val;
+        appSettings.setNumber(`${this.garden}-${this.sensor}-warnValue`, this.warnValue);
     }
 }

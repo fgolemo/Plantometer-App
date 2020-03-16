@@ -16,33 +16,36 @@
 </ActionBar>
 
 <StackLayout verticalAlignment="center" horizontalAlignment="center">
-    <GridLayout columns="*, 3*, *" class="heading" rows="300, auto, auto, auto">
+    <GridLayout columns="*, 3*, *" class="heading" rows="300, auto, auto, auto, auto, auto">
 
         <StackLayout row="0" col="0" colSpan="3" horizontalAlignment="center">
             <StackLayout [visibility]="dataLoaded ? 'visible' : 'collapse'">
-<!--            <StackLayout *ngIf="dataLoaded">-->
-                <RadCartesianChart tkExampleTitle tkToggleNavButton>
-                    <RadCartesianChartGrid tkCartesianGrid
-                                           horizontalLinesVisible="true"
-                                           verticalLinesVisible="false"
-                                           horizontalStripLinesVisible="false"
-                                           verticalStripLinesVisible="false"
-                                           horizontalStrokeColor="#22006b69"
-                                           horizontalStrokeWidth="1"
-                    >
-                    </RadCartesianChartGrid>
+
+                <RadCartesianChart #chart>
+                    <!--                    <RadCartesianChartGrid tkCartesianGrid-->
+                    <!--                                           horizontalLinesVisible="true"-->
+                    <!--                                           verticalLinesVisible="false"-->
+                    <!--                                           horizontalStripLinesVisible="false"-->
+                    <!--                                           verticalStripLinesVisible="false"-->
+                    <!--                                           horizontalStrokeColor="#22006b69"-->
+                    <!--                                           horizontalStrokeWidth="1"-->
+                    <!--                    >-->
+                    <!--                    </RadCartesianChartGrid>-->
                     <DateTimeContinuousAxis tkCartesianHorizontalAxis
                                             minimum="{{dateStart}}" maximum="{{dateEnd}}"
                                             majorStep="720" majorStepUnit="Minute" dateFormat="MMM dd"
                                             labelFitMode="Rotate" labelRotationAngle="1.2">
                     </DateTimeContinuousAxis>
-                    <LinearAxis tkCartesianVerticalAxis minimum="0" maximum="1024"></LinearAxis>
+                    <LinearAxis tkCartesianVerticalAxis minimum="0" maximum="{{maxGauge}}" id="verBarAxis"></LinearAxis>
                     <Trackball tkCartesianTrackball></Trackball>
-<!--                    <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false" value="100" zPosition="AboveSeries"-->
-<!--                                             android:strokeWidth="4" ios:strokeWidth="10" strokeColor="#DEBFEB80">-->
-<!--                    </ChartGridLineAnnotation>-->
                     <LineSeries tkCartesianSeries [items]="data" categoryProperty="timeStamp"
                                 valueProperty="amount"></LineSeries>
+                    <ChartPlotBandAnnotation tkCartesianAnnotations axisId="verBarAxis" minValue="0" maxValue="{{warnValue}}"
+                                             zPosition="BelowSeries" strokeWidth="0" fillColor="#FED2D3" strokeColor="#FED2D3">
+                    </ChartPlotBandAnnotation>
+                    <ChartPlotBandAnnotation tkCartesianAnnotations axisId="verBarAxis" minValue="{{warnValue}}" maxValue="{{moistValue}}"
+                                             zPosition="BelowSeries" strokeWidth="0" fillColor="#FEFEBF" strokeColor="#FEFEBF">
+                    </ChartPlotBandAnnotation>
                 </RadCartesianChart>
             </StackLayout>
         </StackLayout>
@@ -51,14 +54,10 @@
             <Label text="Sensor-specific settings" class="setting"></Label>
         </StackLayout>
 
-        <StackLayout row="2" col="0" colSpan="3" horizontalAlignment="left">
-            <Label text="What's the name of this sensor?" class="setting info"></Label>
-        </StackLayout>
-
-        <StackLayout row="3" col="0" horizontalAlignment="center">
+        <StackLayout row="2" col="0" horizontalAlignment="center">
             <Label text="Name" class="setting"></Label>
         </StackLayout>
-        <StackLayout row="3" col="1" colSpan="2" verticalAlignment="middle" horizontalAlignment="stretch">
+        <StackLayout row="2" col="1" colSpan="2" verticalAlignment="middle" horizontalAlignment="stretch">
             <TextField hint="Sensor Name"
                        [text]='name'
                        returnKeyType="done"
@@ -66,6 +65,44 @@
                        (blur)="onBlur($event)">
             </TextField>
         </StackLayout>
+
+<!--        <StackLayout row="3" col="0" colSpan="3" horizontalAlignment="left">-->
+<!--            <Label text="What's the range of the gauge?" class="setting info"></Label>-->
+<!--        </StackLayout>-->
+
+        <StackLayout row="3" col="0" horizontalAlignment="center">
+            <Label text="Gauge max" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="3" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
+            <Slider #sl minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="maxGauge"
+                    (valueChange)="maxchange(sl.value)" class="sliderman"></Slider>
+        </StackLayout>
+        <StackLayout row="3" col="2" verticalAlignment="top" horizontalAlignment="center">
+            <Label text="{{maxGauge}}" class="setting"></Label>
+        </StackLayout>
+
+        <StackLayout row="4" col="0" horizontalAlignment="center">
+            <Label text="Warning at" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="4" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
+            <Slider #sl2 minValue="1" maxValue="{{moistValue-1}}" loaded="onSliderLoaded" [value]="warnValue"
+                    (valueChange)="warnchange(sl2.value)" class="sliderman"></Slider>
+        </StackLayout>
+        <StackLayout row="4" col="2" verticalAlignment="top" horizontalAlignment="center">
+            <Label text="{{warnValue}}" class="setting"></Label>
+        </StackLayout>
+
+        <StackLayout row="5" col="0" horizontalAlignment="center">
+            <Label text="Okay at" class="setting"></Label>
+        </StackLayout>
+        <StackLayout row="5" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
+            <Slider #sl3 minValue="{{warnValue+1}}" maxValue="1024" loaded="onSliderLoaded" [value]="moistValue"
+                    (valueChange)="moistchange(sl3.value)" class="sliderman"></Slider>
+        </StackLayout>
+        <StackLayout row="5" col="2" verticalAlignment="top" horizontalAlignment="center">
+            <Label text="{{moistValue}}" class="setting"></Label>
+        </StackLayout>
+
 
     </GridLayout>
 </StackLayout>
