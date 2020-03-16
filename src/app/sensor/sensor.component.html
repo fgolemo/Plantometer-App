@@ -74,7 +74,7 @@
             <Label text="Gauge max" class="setting"></Label>
         </StackLayout>
         <StackLayout row="3" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
-            <Slider #sl minValue="0" maxValue="1024" loaded="onSliderLoaded" [value]="maxGauge"
+            <Slider #sl minValue="{{moistValue+1}}" maxValue="1024" loaded="onSliderLoaded" [value]="maxGauge"
                     (valueChange)="maxchange(sl.value)" class="sliderman"></Slider>
         </StackLayout>
         <StackLayout row="3" col="2" verticalAlignment="top" horizontalAlignment="center">
@@ -96,7 +96,7 @@
             <Label text="Okay at" class="setting"></Label>
         </StackLayout>
         <StackLayout row="5" col="1" verticalAlignment="middle" horizontalAlignment="stretch">
-            <Slider #sl3 minValue="{{warnValue+1}}" maxValue="1024" loaded="onSliderLoaded" [value]="moistValue"
+            <Slider #sl3 minValue="{{warnValue+1}}" maxValue="{{maxGauge-1}}" loaded="onSliderLoaded" [value]="moistValue"
                     (valueChange)="moistchange(sl3.value)" class="sliderman"></Slider>
         </StackLayout>
         <StackLayout row="5" col="2" verticalAlignment="top" horizontalAlignment="center">

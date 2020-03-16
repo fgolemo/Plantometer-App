@@ -40,9 +40,6 @@ export class HomeComponent implements OnInit {
     // gaugesActive: Array<number> = [];
     gauges = {};
     gaugeValues = {};
-    sensorMoistLimits: Array<number> = []; // TODO later load these from the user settings
-    sensorWarnLimits: Array<number> = []; // TODO later load these from the user settings
-    sensorRangeLimits: Array<number> = []; // TODO later load these from the user settings
 
     @ViewChildren("gauges") gaugeElements: QueryList<any>;
     // @ViewChild("needle", {static: false}) needleElement: ElementRef;
@@ -59,10 +56,6 @@ export class HomeComponent implements OnInit {
             // refreshing
             this.getGardens();
         });
-
-        this.sensorWarnLimits = [appSettings.getNumber("defaultWarn", 10)];
-        this.sensorMoistLimits = [appSettings.getNumber("defaultMoist", 30)];
-        this.sensorRangeLimits = [appSettings.getNumber("defaultRange", 1024)];
 
         // Init your component properties here.
         firebase.init({
@@ -122,7 +115,10 @@ export class HomeComponent implements OnInit {
                     if (!this.sensors.some((e) => e.id === val)) {
                         const settingPath = `${this.listPickerCountries[this.gardenIdx]}-${val}`;
                         const name = appSettings.getString(settingPath, `Sensor ${val}`);
-                        this.sensors.push(new Sensor(val, name));
+                        const moistValue = appSettings.getNumber(`${settingPath}-moistValue`, appSettings.getNumber("defaultMoist", 30));
+                        const warnValue = appSettings.getNumber(`${settingPath}-warnValue`, appSettings.getNumber("defaultWarn", 10));
+                        const maxGauge = appSettings.getNumber(`${settingPath}-maxGauge`, 1024);
+                        this.sensors.push(new Sensor(val, name, moistValue, warnValue, maxGauge));
                     }
                 });
                 this.makeGauges();
@@ -173,14 +169,6 @@ export class HomeComponent implements OnInit {
             console.log("reading: " + JSON.stringify(reading)); // an array, added in plugin v 8.0.0
 
             this.updateGauge(reading);
-            // if (!this.gauges.hasOwnProperty(reading.sensor)) {
-            //     // console.log("making new gauge");
-            //     this.updateGauge(reading);
-            //
-            // } else {
-            //     // console.log("updating gauge: " + reading.moisture);
-            //     this.updateGauge(reading);
-            // }
         }
     };
 
