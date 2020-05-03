@@ -8,6 +8,7 @@
       "version": "6.3.1"
     }
   },
+  "version": "1.0.0",
   "description": "NativeScript Application",
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
@@ -25,6 +26,8 @@
     "@angular/router": "~8.2.0",
     "@nativescript/theme": "~2.2.1",
     "nativescript-angular": "~8.20.3",
+    "nativescript-background-fetch": "^1.2.1",
+    "nativescript-local-notifications": "^4.2.1",
     "nativescript-plugin-firebase": "^10.3.3",
     "nativescript-ui-chart": "^7.1.1",
     "nativescript-ui-gauge": "^6.0.0",

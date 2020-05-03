@@ -19,6 +19,7 @@ import { Sensor } from "~/app/home/sensor";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 import { Frame } from "tns-core-modules/ui/frame";
+import { BackgroundService } from "~/app/background/background.service";
 
 // to rerun firebase config, run `npm run config`
 interface Reading {
@@ -47,8 +48,16 @@ export class HomeComponent implements OnInit {
 
     // @ViewChild('fruit', { static: true }) fruit: ElementRef;
 
-    constructor(private _vcRef: ViewContainerRef, private _router: Router, private _location: PlatformLocation) {
+    constructor(
+        private _vcRef: ViewContainerRef,
+        private _router: Router,
+        private _location: PlatformLocation,
+        private _bgs: BackgroundService) {
         // Use the component constructor to inject providers.
+    }
+
+    getServiceString(): string {
+        return this._bgs.getThirst();
     }
 
     ngOnInit(): void {
@@ -170,7 +179,7 @@ export class HomeComponent implements OnInit {
 
             this.updateGauge(reading);
         }
-    };
+    }
 
     updateGauge(reading) {
         this.gauges[reading.sensor] = true;
