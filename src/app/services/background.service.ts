@@ -2,52 +2,60 @@ import { Injectable } from "@angular/core";
 import { BackgroundFetch } from "nativescript-background-fetch";
 import { LocalNotifications } from "nativescript-local-notifications";
 import { Color } from "@nativescript/core/color/color";
+import { FbService } from "~/app/services/fb.service";
+import * as appSettings from "tns-core-modules/application-settings";
 
 @Injectable({
     providedIn: "root"
 })
 export class BackgroundService {
-    garden = "";
-    sensors = [];
-    plantThristy = "TEST";
-    private _counter: number;
     private _fetchManager: BackgroundFetch;
+    private _garden: any;
 
-    constructor() {
+    constructor(private _fb: FbService) {
 
         BackgroundFetch.configure({
-            minimumFetchInterval: 1,
+            minimumFetchInterval: 15,
             stopOnTerminate: false,
             startOnBoot: true,
-            enableHeadless: true
-        }, function() {
+            enableHeadless: false,
+            forceReload: true
+        }, () => {
             console.log("[BackgroundFetch] Event Received!");
-            this._counter++;
             this.queryAllPlants();
-            this.showNotification();
             BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA);
-        }.bind(this), function(error) {
+        }, (error) => {
             console.log("[BackgroundFetch] FAILED");
-        }.bind(this));
+            console.log(error);
+        });
 
         // Initialize default values.
-        this._counter = 0;
         this.queryAllPlants();
 
     }
 
-    queryAllPlants() {
-        // TODO check all plants, return list of thirsty ones.
-        console.log("BGS updating querying all plants");
-
-        this.plantThristy = this._counter + " plant is thirsty";
+    setGarden(garden) {
+        this._garden = garden;
     }
 
-    showNotification() {
+    queryAllPlants() {
+        if (!this._garden) {
+            this._garden = appSettings.getString("lastGarden");
+        }
+
+        console.log("querying plants. garden:" + this._garden);
+        this._fb.checkAllSensors(this._garden, (sensor) => {
+            console.log("found problematic plant:", sensor);
+            this.showNotification(sensor);
+        });
+        // this.showNotification("ladeeda");
+    }
+
+    showNotification(sensor) {
         LocalNotifications.schedule([{
             // id: 1, // generated id if not set
             title: "Thirsty Plant Alert",
-            body: "Plant X needs water",
+            body: `${sensor} needs water`,
             // ticker: "The ticker",
             color: new Color("DarkGreen"),
             badge: 1,
@@ -56,7 +64,8 @@ export class BackgroundService {
             // thumbnail: true,
             // interval: 'minute',
             channel: "My Channel", // default: 'Channel'
-            at: new Date(new Date().getTime() + (3 * 1000)) // 3 seconds from now
+            // at: new Date(new Date().getTime() + (3 * 1000)) // 3 seconds from now
+            at: new Date(new Date().getTime() + (100)) // 3 seconds from now
         }]).then(
             (scheduledIds) => {
                 console.log("Notification id(s) scheduled: " + JSON.stringify(scheduledIds));
@@ -65,21 +74,17 @@ export class BackgroundService {
                 console.log("scheduling error: " + error);
             }
         );
-        LocalNotifications.addOnMessageReceivedCallback(
-            (notification) => {
-                console.log("ID: " + notification.id);
-                console.log("Title: " + notification.title);
-                console.log("Body: " + notification.body);
-            }
-        ).then(
-            () => {
-                console.log("Listener added");
-            }
-        );
+        // LocalNotifications.addOnMessageReceivedCallback(
+        //     (notification) => {
+        //         console.log("ID: " + notification.id);
+        //         console.log("Title: " + notification.title);
+        //         console.log("Body: " + notification.body);
+        //     }
+        // ).then(
+        //     () => {
+        //         console.log("Listener added");
+        //     }
+        // );
 
-    }
-
-    getThirst() {
-        return this.plantThristy;
     }
 }

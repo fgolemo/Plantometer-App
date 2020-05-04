@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Sensor } from "~/app/home/sensor";
 import * as appSettings from "tns-core-modules/application-settings";
 import { Reading } from "~/app/sensor/reading";
+const firebase = require("nativescript-plugin-firebase");
 
 @Injectable({
     providedIn: "root"
@@ -24,16 +25,24 @@ export class FbService {
 
         return reading;
     }
+
     private gardens: any;
-    private fb: any;
     private sensors: Array<Sensor>;
 
-    setup(fb) {
-        this.fb = fb;
+    constructor() {
+        this.sensors = [];
+        firebase.init({}).then(
+            () => {
+                console.log("firebase.init done");
+            },
+            (error) => {
+                console.log(`firebase.init error: ${error}. Trying to get gardens anyway`);
+            }
+        );
     }
 
     getGardens() {
-        return this.fb.getValue("/gardens")
+        return firebase.getValue("/gardens")
             .then((result) => {
                 console.log(JSON.stringify(result.value));
                 this.gardens = result.value;
@@ -44,9 +53,11 @@ export class FbService {
     }
 
     getSensors(garden) {
+        appSettings.setString("lastGarden", garden);
+
         this.sensors = new Array<Sensor>();
 
-        return this.fb.getValue(`/${garden}/sensors`)
+        return firebase.getValue(`/${garden}/sensors`)
             .then((result) => {
                 result.value.forEach((val) => {
                     if (!this.sensors.some((e) => e.id === val)) {
@@ -64,22 +75,36 @@ export class FbService {
             .catch((error) => console.log("Error: " + error));
     }
 
-    getSensorUpdating(garden, sensor, callback) {
+    getSensor(garden, sensor, callback, single: boolean = false) {
+        // appSettings.setString("lastGarden", garden);
         console.log("querying:" + `/${garden}/${sensor}`);
-        this.fb.query(
+        firebase.query(
             callback,
             `/${garden}/${sensor}`,
             {
-                // singleEvent: true,
+                singleEvent: single,
                 orderBy: {
-                    type: this.fb.QueryOrderByType.CHILD,
+                    type: firebase.QueryOrderByType.CHILD,
                     value: "timestamp" // mandatory when type is 'child'
                 },
                 limit: {
-                    type: this.fb.QueryLimitType.LAST,
+                    type: firebase.QueryLimitType.LAST,
                     value: 1
                 }
             }
         );
+    }
+
+    checkAllSensors(garden, callback) {
+        for (const sensor of this.sensors) {
+            this.getSensor(garden, sensor.id, (result) => {
+                if (!result.error) {
+                    const reading = FbService.result2Reading(result);
+                    if (sensor.warnValue >= reading.moisture) {
+                        callback(sensor.name);
+                    }
+                }
+            }, true);
+        }
     }
 }

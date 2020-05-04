@@ -12,14 +12,13 @@ import { RadSideDrawer } from "nativescript-ui-sidedrawer";
 import * as app from "tns-core-modules/application";
 import { ListPicker } from "tns-core-modules/ui/list-picker";
 
-const firebase = require("nativescript-plugin-firebase");
 import * as appSettings from "tns-core-modules/application-settings";
 import { RadialNeedle, RadRadialGauge } from "nativescript-ui-gauge";
 import { Sensor } from "~/app/home/sensor";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
 // import { Frame } from "tns-core-modules/ui/frame";
-import { BackgroundService } from "~/app/background/background.service";
+import { BackgroundService } from "~/app/services/background.service";
 import { FbService } from "~/app/services/fb.service";
 
 // to rerun firebase config, run `npm run config`
@@ -53,27 +52,13 @@ export class HomeComponent implements OnInit {
         // Use the component constructor to inject providers.
     }
 
-    getServiceString(): string {
-        return this._bgs.getThirst();
-    }
-
     ngOnInit(): void {
         this._location.onPopState(() => {
-            // refreshing
+            // refreshing when coming back to this page
             this.getGardens();
         });
 
-        firebase.init({}).then(
-            () => {
-                console.log("firebase.init done");
-            },
-            (error) => {
-                console.log(`firebase.init error: ${error}. Trying to get gardens anyway`);
-            }
-        ).then(() => {
-            this._fb.setup(firebase);
-            this.getGardens();
-        });
+        this.getGardens();
     }
 
     getGardens() {
@@ -86,6 +71,7 @@ export class HomeComponent implements OnInit {
     }
 
     getSensors(garden) {
+        this._bgs.setGarden(garden);
         this._fb.getSensors(garden).then((sensors) => {
             this.sensors = sensors;
             this.makeGauges();
@@ -121,7 +107,7 @@ export class HomeComponent implements OnInit {
 
     getSensor(sensor) {
         const garden = this.listPickerCountries[this.gardenIdx];
-        this._fb.getSensorUpdating(garden, sensor, this.onSensor);
+        this._fb.getSensor(garden, sensor, this.onSensor, false);
     }
 
     onSensor = (result) => {
