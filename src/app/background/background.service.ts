@@ -46,17 +46,17 @@ export class BackgroundService {
     showNotification() {
         LocalNotifications.schedule([{
             // id: 1, // generated id if not set
-            title: "The title",
-            body: "Recurs every minute until cancelled",
-            ticker: "The ticker",
-            color: new Color("red"),
+            title: "Thirsty Plant Alert",
+            body: "Plant X needs water",
+            // ticker: "The ticker",
+            color: new Color("DarkGreen"),
             badge: 1,
             icon: "res://heart",
-            image: "https://cdn-images-1.medium.com/max/1200/1*c3cQvYJrVezv_Az0CoDcbA.jpeg",
-            thumbnail: true,
+            // image: "https://cdn-images-1.medium.com/max/1200/1*c3cQvYJrVezv_Az0CoDcbA.jpeg",
+            // thumbnail: true,
             // interval: 'minute',
             channel: "My Channel", // default: 'Channel'
-            at: new Date(new Date().getTime() + (3 * 1000)) // 10 seconds from now
+            at: new Date(new Date().getTime() + (3 * 1000)) // 3 seconds from now
         }]).then(
             (scheduledIds) => {
                 console.log("Notification id(s) scheduled: " + JSON.stringify(scheduledIds));

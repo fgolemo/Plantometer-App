@@ -1,10 +1,10 @@
 import {
-    AfterViewInit,
+    // AfterViewInit,
     Component,
-    ElementRef,
+    // ElementRef,
     OnInit,
     QueryList,
-    ViewChild,
+    // ViewChild,
     ViewChildren,
     ViewContainerRef
 } from "@angular/core";
@@ -18,15 +18,11 @@ import { RadialNeedle, RadRadialGauge } from "nativescript-ui-gauge";
 import { Sensor } from "~/app/home/sensor";
 import { Router } from "@angular/router";
 import { PlatformLocation } from "@angular/common";
-import { Frame } from "tns-core-modules/ui/frame";
+// import { Frame } from "tns-core-modules/ui/frame";
 import { BackgroundService } from "~/app/background/background.service";
+import { FbService } from "~/app/services/fb.service";
 
 // to rerun firebase config, run `npm run config`
-interface Reading {
-    sensor: number;
-    timestamp: number;
-    moisture: number;
-}
 
 @Component({
     selector: "Home",
@@ -52,7 +48,8 @@ export class HomeComponent implements OnInit {
         private _vcRef: ViewContainerRef,
         private _router: Router,
         private _location: PlatformLocation,
-        private _bgs: BackgroundService) {
+        private _bgs: BackgroundService,
+        private _fb: FbService) {
         // Use the component constructor to inject providers.
     }
 
@@ -66,32 +63,33 @@ export class HomeComponent implements OnInit {
             this.getGardens();
         });
 
-        // Init your component properties here.
-        firebase.init({
-            // Optionally pass in properties for database, authentication and cloud messaging,
-            // see their respective docs.
-        }).then(
+        firebase.init({}).then(
             () => {
                 console.log("firebase.init done");
-                this.getGardens();
             },
             (error) => {
                 console.log(`firebase.init error: ${error}. Trying to get gardens anyway`);
-                this.getGardens();
             }
-        );
+        ).then(() => {
+            this._fb.setup(firebase);
+            this.getGardens();
+        });
     }
 
-    getGardens(): void {
-        firebase.getValue("/gardens")
-            .then((result) => {
-                console.log(JSON.stringify(result.value));
-                this.listPickerCountries = result.value;
-                this.gardenIdx = appSettings.getNumber("gardenIdx", 0);
-                this.getSensors(this.listPickerCountries[this.gardenIdx]);
-                console.log("loaded saved idx of " + this.gardenIdx);
-            })
-            .catch((error) => console.log("Error: " + error));
+    getGardens() {
+        this._fb.getGardens().then((gardens) => {
+            this.listPickerCountries = gardens;
+            this.gardenIdx = appSettings.getNumber("gardenIdx", 0);
+            this.getSensors(this.listPickerCountries[this.gardenIdx]);
+            console.log("loaded saved idx of " + this.gardenIdx);
+        });
+    }
+
+    getSensors(garden) {
+        this._fb.getSensors(garden).then((sensors) => {
+            this.sensors = sensors;
+            this.makeGauges();
+        });
     }
 
     onDrawerButtonTap(): void {
@@ -115,26 +113,6 @@ export class HomeComponent implements OnInit {
 
     }
 
-    getSensors(garden) {
-        this.sensors = new Array<Sensor>();
-
-        firebase.getValue(`/${garden}/sensors`)
-            .then((result) => {
-                result.value.forEach((val) => {
-                    if (!this.sensors.some((e) => e.id === val)) {
-                        const settingPath = `${this.listPickerCountries[this.gardenIdx]}-${val}`;
-                        const name = appSettings.getString(settingPath, `Sensor ${val}`);
-                        const moistValue = appSettings.getNumber(`${settingPath}-moistValue`, appSettings.getNumber("defaultMoist", 30));
-                        const warnValue = appSettings.getNumber(`${settingPath}-warnValue`, appSettings.getNumber("defaultWarn", 10));
-                        const maxGauge = appSettings.getNumber(`${settingPath}-maxGauge`, 1024);
-                        this.sensors.push(new Sensor(val, name, moistValue, warnValue, maxGauge));
-                    }
-                });
-                this.makeGauges();
-            })
-            .catch((error) => console.log("Error: " + error));
-    }
-
     makeGauges() {
         for (const sensor of this.sensors) {
             this.getSensor(sensor.id);
@@ -142,42 +120,15 @@ export class HomeComponent implements OnInit {
     }
 
     getSensor(sensor) {
-        console.log("querying:" + `/${this.listPickerCountries[this.gardenIdx]}/${sensor}`);
-        firebase.query(
-            this.onSensor,
-            `/${this.listPickerCountries[this.gardenIdx]}/${sensor}`,
-            {
-                // singleEvent: true,
-                orderBy: {
-                    type: firebase.QueryOrderByType.CHILD,
-                    value: "timestamp" // mandatory when type is 'child'
-                },
-                limit: {
-                    type: firebase.QueryLimitType.LAST,
-                    value: 1
-                }
-            }
-        );
+        const garden = this.listPickerCountries[this.gardenIdx];
+        this._fb.getSensorUpdating(garden, sensor, this.onSensor);
     }
 
     onSensor = (result) => {
         // note that the query returns 1 match at a time
         // in the order specified in the query
         if (!result.error) {
-            // console.log("Event type: " + result.type);
-            // console.log("Key: " + result.key);
-            // console.log("Value: " + JSON.stringify(result.value)); // a JSON object
-            // console.log("Children: " + JSON.stringify(result.children)); // an array, added in plugin v 8.0.0
-
-            let reading: Reading;
-            if (result.value.hasOwnProperty("moisture")) {
-                reading = result.value;
-            } else {
-                reading = result.children[0];
-            }
-            console.log("reading: " + JSON.stringify(reading)); // an array, added in plugin v 8.0.0
-
-            this.updateGauge(reading);
+            this.updateGauge(FbService.result2Reading(result));
         }
     }
 
