@@ -15,7 +15,7 @@ export class BackgroundService {
     constructor(private _fb: FbService) {
 
         BackgroundFetch.configure({
-            minimumFetchInterval: 15,
+            minimumFetchInterval: 240,
             stopOnTerminate: false,
             startOnBoot: true,
             enableHeadless: false,
@@ -54,7 +54,7 @@ export class BackgroundService {
     showNotification(sensor) {
         LocalNotifications.schedule([{
             // id: 1, // generated id if not set
-            title: "Thirsty Plant Alert",
+            title: "Thirsty Plant Alert 🍂",
             body: `${sensor} needs water`,
             // ticker: "The ticker",
             color: new Color("DarkGreen"),
